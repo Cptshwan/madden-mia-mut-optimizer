@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Thin launcher so you can run: ./mia-mut  or  ~/madden-mia-mut-optimizer/mia-mut
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+export PATH="${HOME}/.local/bin:${PATH}"
+exec python3 "$ROOT/cli.py" "$@"

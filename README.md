@@ -16,8 +16,46 @@ Build an optimized **Miami Dolphins theme-team roster** for **Madden NFL 26 Ulti
 
 ### Requirements
 
-- Python 3.10+
-- Node.js 18+
+- Python 3.10+ (CLI)
+- Node.js 18+ (web UI only)
+- `httpx` for live mut.gg fetches
+
+### Linux CLI (this device)
+
+```bash
+cd madden-mia-mut-optimizer
+
+# one-time deps (already present if you used the web backend)
+pip3 install --user --break-system-packages -r requirements-cli.txt
+
+# run
+./mia-mut
+# or
+python3 cli.py
+```
+
+Useful flags:
+
+```bash
+./mia-mut                          # full optimized roster
+./mia-mut --list                   # top MIA cards by OVR
+./mia-mut --min-overall 90         # ignore low cards
+./mia-mut --budget 500000 --value  # coin budget + value mode
+./mia-mut --no-depth               # starters only
+./mia-mut --json roster.json       # save full JSON
+./mia-mut --no-color               # plain text / pipes
+./mia-mut --help
+```
+
+Optional: put it on your PATH
+
+```bash
+mkdir -p ~/.local/bin
+ln -sf "$(pwd)/mia-mut" ~/.local/bin/mia-mut
+mia-mut
+```
+
+### Web UI
 
 ### 1. Backend
 

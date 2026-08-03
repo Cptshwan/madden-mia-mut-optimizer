@@ -1,0 +1,2 @@
+# Minimal deps for the Linux CLI (no web UI)
+httpx==0.28.1
