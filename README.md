@@ -28,16 +28,27 @@ cd madden-mia-mut-optimizer
 # one-time deps (already present if you used the web backend)
 pip3 install --user --break-system-packages -r requirements-cli.txt
 
-# run
+# run (interactive full-screen app — stays open until q)
 ./mia-mut
 # or
 python3 cli.py
 ```
 
+Inside the app:
+
+| Key | Action |
+|-----|--------|
+| `↑` `↓` / `j` `k` | Scroll |
+| `PgUp` `PgDn` | Page (KeebDeck: **FN + ↑ / ↓**) |
+| `g` / `G` | Top / bottom |
+| `r` | Refresh from mut.gg |
+| `q` / `Esc` | Quit back to the shell |
+
 Useful flags:
 
 ```bash
-./mia-mut                          # full optimized roster
+./mia-mut                          # interactive TUI (default)
+./mia-mut --once                   # print roster and exit
 ./mia-mut --list                   # top MIA cards by OVR
 ./mia-mut --min-overall 90         # ignore low cards
 ./mia-mut --budget 500000 --value  # coin budget + value mode

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Miami Dolphins Madden 26 MUT — CLI roster optimizer
+Miami Dolphins Madden 26 MUT — roster optimizer
 
-Works offline of the web UI. Fetches live cards from mut.gg and prints an
-optimized theme-team lineup to the terminal.
+Default (interactive TTY): full-screen app you can scroll and quit with q.
+One-shot dump: --once   JSON: --json PATH
 
 Usage:
-  ./cli.py
+  ./cli.py                          # interactive TUI (stays open)
+  ./cli.py --once                   # print roster and exit
   ./cli.py --min-overall 90 --no-depth
   ./cli.py --budget 500000 --value
   ./cli.py --json roster.json
@@ -188,16 +189,27 @@ def print_player_list(players: list[dict[str, Any]], limit: int) -> None:
 def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
         prog="mia-mut",
-        description="Optimize a Miami Dolphins Madden 26 Ultimate Team roster (CLI).",
+        description=(
+            "Optimize a Miami Dolphins Madden 26 Ultimate Team roster. "
+            "Opens a full-screen interactive app by default (q to quit)."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 examples:
-  %(prog)s
+  %(prog)s                         interactive TUI (default on a terminal)
+  %(prog)s --once                  print roster and exit
   %(prog)s --min-overall 90
   %(prog)s --budget 750000 --value
   %(prog)s --list --limit 50
   %(prog)s --json ~/mia-roster.json --quiet
   %(prog)s --no-color
+
+TUI keys:
+  ↑↓ / j k     scroll line
+  PgUp / PgDn  page (KeebDeck: FN + ↑ / ↓)
+  g / G        top / bottom
+  r            refresh from mut.gg
+  q / Esc      quit to shell
         """,
     )
     p.add_argument(
@@ -243,14 +255,25 @@ examples:
     )
     p.add_argument(
         "--quiet",
-        "-q",
         action="store_true",
-        help="Less banner noise (still prints roster unless --json - only)",
+        help="Less banner noise in --once mode (still prints roster unless --json - only)",
     )
     p.add_argument(
         "--no-color",
         action="store_true",
-        help="Disable ANSI colors",
+        help="Disable ANSI colors in --once mode",
+    )
+    p.add_argument(
+        "--once",
+        "--print",
+        action="store_true",
+        dest="once",
+        help="Print roster once and exit (no interactive TUI)",
+    )
+    p.add_argument(
+        "--tui",
+        action="store_true",
+        help="Force interactive TUI even if stdout is not a TTY",
     )
     p.add_argument(
         "--team-id",
@@ -343,10 +366,31 @@ async def run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _want_tui(args: argparse.Namespace) -> bool:
+    """Interactive full-screen app unless user asked for dump/json/list-only."""
+    if args.once or args.json or args.list:
+        return False
+    if args.tui:
+        return True
+    return sys.stdout.isatty() and sys.stdin.isatty()
+
+
 def main(argv: Optional[list[str]] = None) -> None:
     args = parse_args(argv)
     try:
-        code = asyncio.run(run(args))
+        if _want_tui(args):
+            # Ensure backend imports resolve the same way for tui module
+            from tui import run_tui
+
+            code = run_tui(
+                team_id=args.team_id,
+                budget=args.budget,
+                prefer_value=args.value,
+                min_overall=args.min_overall,
+                include_depth=not args.no_depth,
+            )
+        else:
+            code = asyncio.run(run(args))
     except KeyboardInterrupt:
         print("\n" + C.dim("Aborted."), file=sys.stderr)
         code = 130
