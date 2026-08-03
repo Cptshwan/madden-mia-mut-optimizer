@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
-# Thin launcher so you can run: ./mia-mut  or  ~/madden-mia-mut-optimizer/mia-mut
+# Thin launcher so you can run: ./mia-mut  or  mia-mut (via ~/.local/bin symlink)
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")" && pwd)"
+
+# Resolve symlinks so this works when installed as ~/.local/bin/mia-mut
+SOURCE="${BASH_SOURCE[0]}"
+while [ -L "$SOURCE" ]; do
+  DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+ROOT="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+
 export PATH="${HOME}/.local/bin:${PATH}"
 exec python3 "$ROOT/cli.py" "$@"
