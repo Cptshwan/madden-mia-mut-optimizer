@@ -204,12 +204,16 @@ examples:
   %(prog)s --json ~/mia-roster.json --quiet
   %(prog)s --no-color
 
-TUI keys:
-  ↑↓ / j k     scroll line
+TUI keys (main roster):
+  ↑↓ / j k     move slot selection
+  Enter/Space  open top 3 alternates for that position
   PgUp / PgDn  page (KeebDeck: FN + ↑ / ↓)
-  g / G        top / bottom
+  g / G        first / last slot
   r            refresh from mut.gg
   q / Esc      quit to shell
+
+TUI keys (alternates submenu):
+  Esc / b / q  return to main roster
         """,
     )
     p.add_argument(

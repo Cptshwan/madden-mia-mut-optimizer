@@ -38,11 +38,13 @@ Inside the app:
 
 | Key | Action |
 |-----|--------|
-| `↑` `↓` / `j` `k` | Scroll |
+| `↑` `↓` / `j` `k` | Move slot selection |
+| `Enter` / `Space` | Open **top 3 alternates** (OVR + price) |
+| `Esc` / `b` / `q` | Return from alternates submenu (`q` quits on main) |
 | `PgUp` `PgDn` | Page (KeebDeck: **FN + ↑ / ↓**) |
-| `g` / `G` | Top / bottom |
+| `g` / `G` | First / last slot |
 | `r` | Refresh from mut.gg |
-| `q` / `Esc` | Quit back to the shell |
+| `q` / `Esc` | Quit back to the shell (main screen) |
 
 Useful flags:
 
